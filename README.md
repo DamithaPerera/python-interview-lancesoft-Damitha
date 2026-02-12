@@ -192,3 +192,35 @@ Sample Response from Payload Variant A
 
 * Provide API docs (OpenAPI/Swagger auto-generated is fine).
 * You may also propose alternate API docs methodology.
+
+---
+
+## Implementation Notes (FastAPI + SQLite)
+
+### Run
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+### Endpoints
+- `POST /rates` (upsert by `rate_date`, `base_currency`, `quote_currency`, `side`)
+- `GET /rates` (optional filters: `rate_date`, `base_currency`, `quote_currency`, `side`)
+- `GET /rates/{rate_id}`
+- `PUT /rates/{rate_id}` (update rate)
+- `DELETE /rates/{rate_id}`
+- `POST /transactions`
+
+### Domain Polymorphism
+Transaction calculations are handled by side-specific calculators:
+- `BuyCalculator`
+- `SellCalculator`
+
+These share a common `TransactionCalculator` interface, making it easy to add new transaction types with different rules.
+
+### Tests
+```bash
+pytest -q
+```
