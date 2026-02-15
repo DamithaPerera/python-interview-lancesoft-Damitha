@@ -3,8 +3,8 @@ from decimal import Decimal
 
 from fastapi.testclient import TestClient
 
-from main import app
-from db import Base, engine
+from app.main import app
+from app.db import Base, engine
 
 client = TestClient(app)
 
