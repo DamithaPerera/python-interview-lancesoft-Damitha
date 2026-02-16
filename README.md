@@ -208,9 +208,9 @@ uvicorn app.main:app --reload
 ### Endpoints
 - `POST /rates` (upsert by `rate_date`, `base_currency`, `quote_currency`, `side`)
 - `GET /rates` (optional filters: `rate_date`, `base_currency`, `quote_currency`, `side`)
-- `GET /rates/{rate_id}`
-- `PUT /rates/{rate_id}` (update rate)
-- `DELETE /rates/{rate_id}`
+- `GET /rates/{rate_date}/{base_currency}/{quote_currency}/{side}`
+- `PUT /rates/{rate_date}/{base_currency}/{quote_currency}/{side}` (update rate)
+- `DELETE /rates/{rate_date}/{base_currency}/{quote_currency}/{side}`
 - `POST /transactions`
 
 ### Domain Polymorphism

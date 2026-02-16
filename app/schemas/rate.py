@@ -53,7 +53,5 @@ class RateUpdate(BaseModel):
 
 
 class RateOut(RateBase):
-    id: int
-
     class Config:
         from_attributes = True

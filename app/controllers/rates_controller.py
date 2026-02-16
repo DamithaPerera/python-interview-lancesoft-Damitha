@@ -10,7 +10,7 @@ from app.schemas import RateCreate, RateUpdate
 from app.services.business import (
     create_or_update_rate,
     delete_rate,
-    get_rate_by_id,
+    get_rate_by_key,
     get_rates,
     update_rate,
 )
@@ -43,22 +43,60 @@ def list_rates(
     )
 
 
-def get_rate(rate_id: int, db: Session = Depends(get_db)):
-    rate = get_rate_by_id(db, rate_id=rate_id)
+def get_rate(
+    rate_date: date,
+    base_currency: str,
+    quote_currency: str,
+    side: str,
+    db: Session = Depends(get_db),
+):
+    rate = get_rate_by_key(
+        db,
+        rate_date=rate_date,
+        base_currency=base_currency.upper(),
+        quote_currency=quote_currency.upper(),
+        side=side.upper(),
+    )
     if not rate:
         raise HTTPException(status_code=404, detail="Rate not found")
     return rate
 
 
-def put_rate(rate_id: int, payload: RateUpdate, db: Session = Depends(get_db)):
-    rate = update_rate(db, rate_id=rate_id, rate=payload.rate)
+def put_rate(
+    rate_date: date,
+    base_currency: str,
+    quote_currency: str,
+    side: str,
+    payload: RateUpdate,
+    db: Session = Depends(get_db),
+):
+    rate = update_rate(
+        db,
+        rate_date=rate_date,
+        base_currency=base_currency.upper(),
+        quote_currency=quote_currency.upper(),
+        side=side.upper(),
+        rate=payload.rate,
+    )
     if not rate:
         raise HTTPException(status_code=404, detail="Rate not found")
     return rate
 
 
-def remove_rate(rate_id: int, db: Session = Depends(get_db)):
-    ok = delete_rate(db, rate_id=rate_id)
+def remove_rate(
+    rate_date: date,
+    base_currency: str,
+    quote_currency: str,
+    side: str,
+    db: Session = Depends(get_db),
+):
+    ok = delete_rate(
+        db,
+        rate_date=rate_date,
+        base_currency=base_currency.upper(),
+        quote_currency=quote_currency.upper(),
+        side=side.upper(),
+    )
     if not ok:
         raise HTTPException(status_code=404, detail="Rate not found")
     return {"deleted": True}

@@ -1,7 +1,6 @@
 from app.repositories.rate_repository import (
     delete,
     get_by_composite,
-    get_by_id,
     list_all,
     update,
     upsert,
@@ -12,7 +11,6 @@ __all__ = [
     "create",
     "delete",
     "get_by_composite",
-    "get_by_id",
     "list_all",
     "update",
     "upsert",

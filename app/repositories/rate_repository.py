@@ -26,10 +26,6 @@ def get_by_composite(
     return db.execute(stmt).scalar_one_or_none()
 
 
-def get_by_id(db: Session, *, rate_id: int) -> DailyRate | None:
-    return db.get(DailyRate, rate_id)
-
-
 def upsert(
     db: Session,
     *,
@@ -86,8 +82,22 @@ def list_all(
     return list(db.execute(stmt).scalars().all())
 
 
-def update(db: Session, *, rate_id: int, rate: Decimal) -> DailyRate | None:
-    rate_obj = get_by_id(db, rate_id=rate_id)
+def update(
+    db: Session,
+    *,
+    rate_date: date,
+    base_currency: str,
+    quote_currency: str,
+    side: str,
+    rate: Decimal,
+) -> DailyRate | None:
+    rate_obj = get_by_composite(
+        db,
+        rate_date=rate_date,
+        base_currency=base_currency,
+        quote_currency=quote_currency,
+        side=side,
+    )
     if not rate_obj:
         return None
     rate_obj.rate = rate
@@ -97,8 +107,21 @@ def update(db: Session, *, rate_id: int, rate: Decimal) -> DailyRate | None:
     return rate_obj
 
 
-def delete(db: Session, *, rate_id: int) -> bool:
-    rate_obj = get_by_id(db, rate_id=rate_id)
+def delete(
+    db: Session,
+    *,
+    rate_date: date,
+    base_currency: str,
+    quote_currency: str,
+    side: str,
+) -> bool:
+    rate_obj = get_by_composite(
+        db,
+        rate_date=rate_date,
+        base_currency=base_currency,
+        quote_currency=quote_currency,
+        side=side,
+    )
     if not rate_obj:
         return False
     db.delete(rate_obj)
