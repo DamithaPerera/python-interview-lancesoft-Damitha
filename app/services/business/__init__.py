@@ -5,9 +5,10 @@ from app.services.business.rate_service import (
     get_rates,
     update_rate,
 )
-from app.services.business.transaction_service import create_transaction
+from app.services.business.transaction_service import calculate_quote, create_transaction
 
 __all__ = [
+    "calculate_quote",
     "create_or_update_rate",
     "create_transaction",
     "delete_rate",

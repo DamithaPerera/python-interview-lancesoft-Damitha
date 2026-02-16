@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class TransactionCreate(BaseModel):
@@ -11,8 +11,35 @@ class TransactionCreate(BaseModel):
     base_currency: str = Field(min_length=3, max_length=3)
     quote_currency: str = Field(min_length=3, max_length=3)
     side: str
-    foreign_amount: Decimal | None = None
-    base_amount: Decimal | None = None
+    foreign_amount: Decimal | None = Field(
+        default=None,
+        description="Provide this OR base_amount. Do not provide both.",
+    )
+    base_amount: Decimal | None = Field(
+        default=None,
+        description="Provide this OR foreign_amount. Do not provide both.",
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "timestamp": "2026-02-16T09:19:34.939Z",
+                    "base_currency": "USD",
+                    "quote_currency": "PHP",
+                    "side": "BUY",
+                    "foreign_amount": "100.00",
+                },
+                {
+                    "timestamp": "2026-02-16T09:19:34.939Z",
+                    "base_currency": "USD",
+                    "quote_currency": "PHP",
+                    "side": "BUY",
+                    "base_amount": "5000.00",
+                },
+            ]
+        }
+    )
 
     @field_validator("base_currency", "quote_currency")
     @classmethod
