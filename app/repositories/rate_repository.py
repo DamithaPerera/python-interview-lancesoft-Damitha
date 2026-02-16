@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.models import DailyRate
 
 
-def get_rate(
+def get_by_composite(
     db: Session,
     *,
     rate_date: date,
@@ -26,7 +26,11 @@ def get_rate(
     return db.execute(stmt).scalar_one_or_none()
 
 
-def upsert_rate(
+def get_by_id(db: Session, *, rate_id: int) -> DailyRate | None:
+    return db.get(DailyRate, rate_id)
+
+
+def upsert(
     db: Session,
     *,
     rate_date: date,
@@ -35,7 +39,7 @@ def upsert_rate(
     side: str,
     rate: Decimal,
 ) -> DailyRate:
-    existing = get_rate(
+    existing = get_by_composite(
         db,
         rate_date=rate_date,
         base_currency=base_currency,
@@ -62,7 +66,7 @@ def upsert_rate(
     return new_rate
 
 
-def list_rates(
+def list_all(
     db: Session,
     *,
     rate_date: date | None = None,
@@ -82,8 +86,8 @@ def list_rates(
     return list(db.execute(stmt).scalars().all())
 
 
-def update_rate(db: Session, *, rate_id: int, rate: Decimal) -> DailyRate | None:
-    rate_obj = db.get(DailyRate, rate_id)
+def update(db: Session, *, rate_id: int, rate: Decimal) -> DailyRate | None:
+    rate_obj = get_by_id(db, rate_id=rate_id)
     if not rate_obj:
         return None
     rate_obj.rate = rate
@@ -93,8 +97,8 @@ def update_rate(db: Session, *, rate_id: int, rate: Decimal) -> DailyRate | None
     return rate_obj
 
 
-def delete_rate(db: Session, *, rate_id: int) -> bool:
-    rate_obj = db.get(DailyRate, rate_id)
+def delete(db: Session, *, rate_id: int) -> bool:
+    rate_obj = get_by_id(db, rate_id=rate_id)
     if not rate_obj:
         return False
     db.delete(rate_obj)

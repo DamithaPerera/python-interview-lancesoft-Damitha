@@ -1,19 +1,14 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.crud import create_transaction, get_rate
-from app.db.deps import get_db
+from app.repositories import rate_repository, transaction_repository
 from app.schemas import TransactionCreate, TransactionOut
-from app.services import get_calculator
-
-router = APIRouter(prefix="/transactions", tags=["transactions"])
+from app.services.business.calculators import get_calculator
 
 
-@router.post("", response_model=TransactionOut)
-def create_fx_transaction(payload: TransactionCreate, db: Session = Depends(get_db)):
-    rate = get_rate(
+def create_transaction(db: Session, *, payload: TransactionCreate) -> TransactionOut | None:
+    rate = rate_repository.get_by_composite(
         db,
         rate_date=payload.timestamp.date(),
         base_currency=payload.base_currency,
@@ -21,7 +16,7 @@ def create_fx_transaction(payload: TransactionCreate, db: Session = Depends(get_
         side=payload.side,
     )
     if not rate:
-        raise HTTPException(status_code=422, detail="No daily rate for transaction date")
+        return None
 
     calc = get_calculator(payload.side)
     result = calc.calculate(
@@ -30,7 +25,7 @@ def create_fx_transaction(payload: TransactionCreate, db: Session = Depends(get_
         base_amount=payload.base_amount,
     )
 
-    txn = create_transaction(
+    txn = transaction_repository.create(
         db,
         timestamp=payload.timestamp,
         base_currency=payload.base_currency,

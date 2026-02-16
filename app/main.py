@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from app.api.router import api_router
+from app.routers.router import api_router
 from app.db import Base, engine
 from app import models  # noqa: F401
 

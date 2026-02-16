@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.models import FxTransaction
 
 
-def create_transaction(
+def create(
     db: Session,
     *,
     timestamp,
