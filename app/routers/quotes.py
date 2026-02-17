@@ -8,9 +8,10 @@ router = APIRouter(prefix="/quotes", tags=["quotes"])
 router.post(
     "",
     response_model=QuoteOut,
-    summary="Get a quote without storing a transaction",
+    summary="Create a quote",
     description=(
-        "Calculate the exchange result using the daily rate for the payload date.\n\n"
+        "Calculate and persist a quote using the daily rate for the payload date.\n\n"
+        "Use the returned `quote_id` with `POST /transactions/confirm` to commit.\n\n"
         "Important: Provide exactly one of `foreign_amount` or `base_amount`.\n"
         "If both or neither are provided, request validation fails with 422."
     ),

@@ -6,9 +6,13 @@ from app.controllers.rates_controller import (
     put_rate,
     remove_rate,
 )
-from app.controllers.transactions_controller import create_fx_transaction
+from app.controllers.transactions_controller import (
+    confirm_fx_transaction,
+    create_fx_transaction,
+)
 
 __all__ = [
+    "confirm_fx_transaction",
     "create_fx_transaction",
     "create_rate",
     "get_quote",
