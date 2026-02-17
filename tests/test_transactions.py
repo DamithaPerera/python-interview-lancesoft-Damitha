@@ -60,7 +60,7 @@ def test_missing_rate_returns_422():
     assert res.status_code == 422
 
 
-def test_rate_upsert_keeps_single_record_for_composite_key():
+def test_rate_create_duplicate_returns_409():
     first = _create_rate(
         rate_date="2026-02-10",
         base_currency="USD",
@@ -77,7 +77,7 @@ def test_rate_upsert_keeps_single_record_for_composite_key():
         side="BUY",
         rate="57.9000",
     )
-    assert second.status_code == 200
+    assert second.status_code == 409
 
     res = client.get(
         "/rates",
@@ -91,7 +91,7 @@ def test_rate_upsert_keeps_single_record_for_composite_key():
     assert res.status_code == 200
     rates = res.json()
     assert len(rates) == 1
-    assert Decimal(rates[0]["rate"]) == Decimal("57.9000")
+    assert Decimal(rates[0]["rate"]) == Decimal("57.1000")
 
 
 def test_buy_and_sell_use_different_daily_rates():
