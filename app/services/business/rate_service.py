@@ -9,7 +9,7 @@ from app.models import DailyRate
 from app.repositories import rate_repository
 
 
-def create_or_update_rate(
+def create_rate(
     db: Session,
     *,
     rate_date: date,
@@ -17,8 +17,18 @@ def create_or_update_rate(
     quote_currency: str,
     side: str,
     rate: Decimal,
-) -> DailyRate:
-    return rate_repository.upsert(
+) -> DailyRate | None:
+    existing = rate_repository.get_by_composite(
+        db,
+        rate_date=rate_date,
+        base_currency=base_currency,
+        quote_currency=quote_currency,
+        side=side,
+    )
+    if existing:
+        return None
+
+    return rate_repository.create(
         db,
         rate_date=rate_date,
         base_currency=base_currency,
