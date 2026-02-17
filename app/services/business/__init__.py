@@ -1,5 +1,5 @@
 from app.services.business.rate_service import (
-    create_or_update_rate,
+    create_rate,
     delete_rate,
     get_rate_by_key,
     get_rates,
@@ -13,7 +13,7 @@ from app.services.business.transaction_service import (
 
 __all__ = [
     "confirm_transaction",
-    "create_or_update_rate",
+    "create_rate",
     "create_quote",
     "create_transaction",
     "delete_rate",

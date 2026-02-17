@@ -26,7 +26,7 @@ def get_by_composite(
     return db.execute(stmt).scalar_one_or_none()
 
 
-def upsert(
+def create(
     db: Session,
     *,
     rate_date: date,
@@ -35,20 +35,6 @@ def upsert(
     side: str,
     rate: Decimal,
 ) -> DailyRate:
-    existing = get_by_composite(
-        db,
-        rate_date=rate_date,
-        base_currency=base_currency,
-        quote_currency=quote_currency,
-        side=side,
-    )
-    if existing:
-        existing.rate = rate
-        db.add(existing)
-        db.commit()
-        db.refresh(existing)
-        return existing
-
     new_rate = DailyRate(
         rate_date=rate_date,
         base_currency=base_currency,

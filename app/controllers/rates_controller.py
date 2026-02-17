@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.deps import get_db
 from app.schemas import RateCreate, RateUpdate
 from app.services.business import (
-    create_or_update_rate,
+    create_rate as create_rate_service,
     delete_rate,
     get_rate_by_key,
     get_rates,
@@ -17,7 +17,7 @@ from app.services.business import (
 
 
 def create_rate(payload: RateCreate, db: Session = Depends(get_db)):
-    return create_or_update_rate(
+    created = create_rate_service(
         db,
         rate_date=payload.rate_date,
         base_currency=payload.base_currency,
@@ -25,6 +25,9 @@ def create_rate(payload: RateCreate, db: Session = Depends(get_db)):
         side=payload.side,
         rate=payload.rate,
     )
+    if not created:
+        raise HTTPException(status_code=409, detail="Rate already exists")
+    return created
 
 
 def list_rates(
