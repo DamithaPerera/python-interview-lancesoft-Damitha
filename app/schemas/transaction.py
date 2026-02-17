@@ -87,3 +87,11 @@ class TransactionOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TransactionConfirmCreate(BaseModel):
+    quote_id: str = Field(min_length=8)
+
+    model_config = ConfigDict(
+        json_schema_extra={"example": {"quote_id": "QTE-7f7ab84b03bf4d84a5f96dbe8db40d1f"}}
+    )
