@@ -1,0 +1,15 @@
+services:
+  api:
+    build: .
+    container_name: money-changer-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:///./fx.db
+      QUOTE_TTL_MINUTES: 15
+      BUY_SPREAD_BPS: 0
+      SELL_SPREAD_BPS: 0
+      FEE_PERCENT: 0
+    volumes:
+      - ./fx.db:/app/fx.db
+    restart: "no"
