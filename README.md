@@ -83,7 +83,7 @@ The system must:
 
 ### 1) Daily Rates
 
-#### Create/Upsert Daily Rate
+#### Create Daily Rate
 `POST /rates`
 ```json
 {
@@ -206,8 +206,14 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
+Optional env vars:
+- `QUOTE_TTL_MINUTES` (default `15`)
+- `BUY_SPREAD_BPS` (default `0`)
+- `SELL_SPREAD_BPS` (default `0`)
+- `FEE_PERCENT` (default `0`)
+
 ### Endpoints
-- `POST /rates` (upsert by `rate_date`, `base_currency`, `quote_currency`, `side`)
+- `POST /rates` (create; returns 409 if `(rate_date, base_currency, quote_currency, side)` already exists)
 - `GET /rates` (optional filters: `rate_date`, `base_currency`, `quote_currency`, `side`)
 - `GET /rates/{rate_date}/{base_currency}/{quote_currency}/{side}`
 - `PUT /rates/{rate_date}/{base_currency}/{quote_currency}/{side}` (update rate)
